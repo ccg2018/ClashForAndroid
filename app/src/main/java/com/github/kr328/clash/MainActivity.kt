@@ -23,59 +23,6 @@ class MainActivity : BaseActivity() {
 
     private var lastEvent: ProcessEvent? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        setSupportActionBar(activity_main_toolbar.apply {
-            setLogo(R.mipmap.ic_launcher_foreground)
-        })
-
-        activity_main_clash_proxies.setOnClickListener {
-            startActivity(Intent(this, ProxyActivity::class.java))
-        }
-
-        activity_main_clash_profiles.setOnClickListener {
-            startActivity(Intent(this, ProfilesActivity::class.java))
-        }
-
-        activity_main_clash_settings.setOnClickListener {
-            startActivity(Intent(this, SettingMainActivity::class.java))
-        }
-
-        activity_main_clash_logs.setOnClickListener {
-            startActivity(Intent(this, LogActivity::class.java))
-        }
-
-        activity_main_clash_feedback.setOnClickListener {
-            startActivity(Intent(this, FeedbackActivity::class.java))
-        }
-
-        activity_main_clash_about.setOnClickListener {
-            showAboutDialog()
-        }
-
-        activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
-        activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
-        activity_main_clash_status_summary.text = getString(R.string.clash_status_click_to_start)
-        activity_main_clash_proxies.visibility = View.GONE
-        activity_main_clash_logs.visibility = View.GONE
-
-        activity_main_clash_status.setOnClickListener {
-            runClash {
-                when (it.currentProcessStatus) {
-                    ProcessEvent.STARTED -> {
-                        it.stop()
-                    }
-                    else -> runOnUiThread {
-                        ServiceUtils.startProxyService(this)?.also {
-                            startActivityForResult(it, VPN_REQUEST_CODE)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     override fun onProcessEvent(event: ProcessEvent?) {
         runOnUiThread {
@@ -164,6 +111,68 @@ class MainActivity : BaseActivity() {
         runClash {
             it.eventService.unregisterEventObserver(MainActivity::class.java.simpleName)
         }
+    }
+
+    override fun initData(bundle: Bundle?) {
+
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_main
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
+        setSupportActionBar(toolbar.apply {
+            setLogo(R.mipmap.ic_launcher_foreground)
+        })
+
+        activity_main_clash_proxies.setOnClickListener {
+            startActivity(Intent(this, ProxyActivity::class.java))
+        }
+
+        activity_main_clash_profiles.setOnClickListener {
+            startActivity(Intent(this, ProfilesActivity::class.java))
+        }
+
+        activity_main_clash_settings.setOnClickListener {
+            startActivity(Intent(this, SettingMainActivity::class.java))
+        }
+
+        activity_main_clash_logs.setOnClickListener {
+            startActivity(Intent(this, LogActivity::class.java))
+        }
+
+        activity_main_clash_feedback.setOnClickListener {
+            startActivity(Intent(this, FeedbackActivity::class.java))
+        }
+
+        activity_main_clash_about.setOnClickListener {
+            showAboutDialog()
+        }
+
+        activity_main_clash_status_icon.setImageResource(R.drawable.ic_clash_stopped)
+        activity_main_clash_status_title.text = getString(R.string.clash_status_stopped)
+        activity_main_clash_status_summary.text = getString(R.string.clash_status_click_to_start)
+        activity_main_clash_proxies.visibility = View.GONE
+        activity_main_clash_logs.visibility = View.GONE
+
+        activity_main_clash_status.setOnClickListener {
+            runClash {
+                when (it.currentProcessStatus) {
+                    ProcessEvent.STARTED -> {
+                        it.stop()
+                    }
+                    else -> runOnUiThread {
+                        ServiceUtils.startProxyService(this)?.also {
+                            startActivityForResult(it, VPN_REQUEST_CODE)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun doBusiness() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

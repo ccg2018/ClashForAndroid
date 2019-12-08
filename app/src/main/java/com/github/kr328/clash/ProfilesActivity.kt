@@ -12,10 +12,16 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
 import com.github.kr328.clash.adapter.ProfileAdapter
 import com.github.kr328.clash.core.event.ErrorEvent
+import com.github.kr328.clash.core.event.ProcessEvent
 import com.github.kr328.clash.core.event.ProfileChangedEvent
 import com.github.kr328.clash.model.ClashProfile
 import com.github.kr328.clash.service.data.ClashProfileEntity
+import com.github.kr328.clash.utils.ServiceUtils
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main_clash_status.*
+import kotlinx.android.synthetic.main.activity_main_profiles.*
+import kotlinx.android.synthetic.main.activity_main_proxy_manage.*
 import kotlinx.android.synthetic.main.activity_profiles.*
 import java.io.File
 import java.io.FileOutputStream
@@ -24,15 +30,18 @@ import java.net.Proxy
 import java.net.URL
 import kotlin.concurrent.thread
 
-class ProfilesActivity : BaseActivity() {
-    private var dialog: Dialog? = null
+class ProfilesActivity : ToolbarActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profiles)
 
-        setSupportActionBar(activity_profiles_toolbar)
+    override fun initData(bundle: Bundle?) {
 
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_profiles
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         activity_profiles_new_profile.setOnClickListener {
             startActivity(Intent(this, CreateProfileActivity::class.java))
         }
@@ -46,6 +55,10 @@ class ProfilesActivity : BaseActivity() {
             this::onOperateClick,
             this::onProfileLongClick)
     }
+
+    override fun doBusiness() {
+    }
+    private var dialog: Dialog? = null
 
     override fun onStart() {
         super.onStart()

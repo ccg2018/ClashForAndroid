@@ -1,6 +1,7 @@
 package com.github.kr328.clash
 
 import android.os.Bundle
+import android.view.View
 import com.github.kr328.clash.adapter.ProxyAdapter
 import com.github.kr328.clash.callback.IUrlTestCallback
 import com.github.kr328.clash.core.event.ErrorEvent
@@ -9,13 +10,17 @@ import com.github.kr328.clash.model.ListProxy
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_proxies.*
 
-class ProxyActivity : BaseActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_proxies)
+class ProxyActivity : ToolbarActivity() {
 
-        setSupportActionBar(activity_proxies_toolbar)
+    override fun initData(bundle: Bundle?) {
 
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_proxies
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         activity_proxies_list.also {
             it.adapter = ProxyAdapter(this, this::setProxySelected, this::urlTest)
             it.layoutManager = (it.adapter!! as ProxyAdapter).getLayoutManager()
@@ -24,7 +29,9 @@ class ProxyActivity : BaseActivity() {
         activity_proxies_swipe.setOnRefreshListener {
             refreshList()
         }
+    }
 
+    override fun doBusiness() {
         refreshList()
     }
 
@@ -38,18 +45,18 @@ class ProxyActivity : BaseActivity() {
         val adapter = (activity_proxies_list.adapter as ProxyAdapter)
 
         runClash {
-            val proxies = adapter.elements.subList(position, position+size)
+            val proxies = adapter.elements.subList(position, position + size)
                 .filterIsInstance<ListProxy.ListProxyItem>()
-                .mapIndexed { index, proxy -> proxy.name to IndexedValue(index, proxy)}
+                .mapIndexed { index, proxy -> proxy.name to IndexedValue(index, proxy) }
                 .toMap()
 
             for ((_, p) in proxies) {
                 p.value.delay = -1
             }
 
-            it.startUrlTest(proxies.keys.toTypedArray(), object: IUrlTestCallback.Stub() {
+            it.startUrlTest(proxies.keys.toTypedArray(), object : IUrlTestCallback.Stub() {
                 override fun onResult(proxy: String?, delay: Long) {
-                    if ( proxy == null ) {
+                    if (proxy == null) {
                         (adapter.elements[position] as ListProxy.ListProxyHeader).urlTest = false
 
                         runOnUiThread {

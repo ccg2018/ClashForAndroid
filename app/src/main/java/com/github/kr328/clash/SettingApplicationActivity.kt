@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.Keep
 import androidx.preference.CheckBoxPreference
 import androidx.preference.Preference
@@ -12,7 +13,8 @@ import com.github.kr328.clash.core.utils.Log
 import kotlinx.android.synthetic.main.activity_setting_application.*
 import kotlin.concurrent.thread
 
-class SettingApplicationActivity : BaseActivity() {
+class SettingApplicationActivity : ToolbarActivity() {
+
     companion object {
         const val KEY_START_ON_BOOT = "key_application_start_on_boot"
     }
@@ -88,11 +90,17 @@ class SettingApplicationActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting_application)
+    override fun initData(bundle: Bundle?) {
+    }
 
-        setSupportActionBar(activity_setting_application_toolbar)
+    override fun bindLayout(): Int {
+        return R.layout.activity_setting_application
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
+    }
+
+    override fun doBusiness() {
     }
 
 

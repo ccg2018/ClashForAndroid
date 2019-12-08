@@ -2,6 +2,7 @@ package com.github.kr328.clash
 
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import androidx.collection.CircularArray
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +12,7 @@ import com.github.kr328.clash.core.event.LogEvent
 import kotlinx.android.synthetic.main.activity_logs.*
 
 
-class LogActivity : BaseActivity() {
+class LogActivity : ToolbarActivity() {
     companion object {
         const val MAX_EVENT_COUNT = 100
     }
@@ -20,29 +21,10 @@ class LogActivity : BaseActivity() {
     private val buffer = CircularArray<LogEvent>(MAX_EVENT_COUNT)
     private val handler = Handler()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_logs)
-
-        setSupportActionBar(activity_logs_toolbar)
-
-        activity_logs_list.also {
-            val dividerItemDecoration = DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
-            it.addItemDecoration(dividerItemDecoration)
-
-            it.adapter = LogAdapter(this, buffer)
-            it.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        }
-    }
-
     override fun onStart() {
         super.onStart()
 
         syncLog = true
-
         activity_logs_list.adapter?.notifyDataSetChanged()
 
         runClash {
@@ -57,6 +39,30 @@ class LogActivity : BaseActivity() {
 
         syncLog = false
     }
+
+    override fun initData(bundle: Bundle?) {
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_logs
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
+        activity_logs_list.also {
+            val dividerItemDecoration = DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+            it.addItemDecoration(dividerItemDecoration)
+
+            it.adapter = LogAdapter(this, buffer)
+            it.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    override fun doBusiness() {
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

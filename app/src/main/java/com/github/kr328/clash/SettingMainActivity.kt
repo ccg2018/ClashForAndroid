@@ -1,11 +1,12 @@
 package com.github.kr328.clash
 
 import android.os.Bundle
+import android.view.View
 import androidx.annotation.Keep
 import androidx.preference.PreferenceFragmentCompat
 import kotlinx.android.synthetic.main.activity_setting_main.*
 
-class SettingMainActivity : BaseActivity() {
+class SettingMainActivity : ToolbarActivity() {
     @Keep
     class Fragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -13,10 +14,16 @@ class SettingMainActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting_main)
+    override fun initData(bundle: Bundle?) {
+    }
 
-        setSupportActionBar(activity_setting_main_toolbar)
+    override fun bindLayout(): Int {
+        return R.layout.activity_setting_main
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
+    }
+
+    override fun doBusiness() {
     }
 }

@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.activity_import_file.*
 import java.io.FileOutputStream
 import kotlin.concurrent.thread
 
-class ImportFileActivity : BaseActivity() {
+class ImportFileActivity : ToolbarActivity() {
     private val elements: List<FormAdapter.Type> = listOf(
         FormAdapter.TextType(
             R.drawable.ic_about,
@@ -31,12 +31,26 @@ class ImportFileActivity : BaseActivity() {
         )
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_import_file)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data != null && (activity_import_file_form.adapter as FormAdapter).onActivityResult(
+                requestCode,
+                resultCode,
+                data
+            )
+        )
+            return
 
-        setSupportActionBar(activity_import_file_toolbar)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
+    override fun initData(bundle: Bundle?) {
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_import_file
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         activity_import_file_form.also {
             it.layoutManager = LinearLayoutManager(this)
             it.adapter = FormAdapter(this, elements)
@@ -52,16 +66,7 @@ class ImportFileActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && (activity_import_file_form.adapter as FormAdapter).onActivityResult(
-                requestCode,
-                resultCode,
-                data
-            )
-        )
-            return
-
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun doBusiness() {
     }
 
     private fun checkAndInsert() {

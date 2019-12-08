@@ -9,7 +9,7 @@ import android.widget.BaseAdapter
 import com.github.kr328.clash.view.FatItem
 import kotlinx.android.synthetic.main.activity_new_profile.*
 
-class CreateProfileActivity : BaseActivity() {
+class CreateProfileActivity : ToolbarActivity() {
     companion object {
         val NEW_PROFILE_SOURCE = listOf(
             AdapterData(
@@ -53,12 +53,16 @@ class CreateProfileActivity : BaseActivity() {
 
     data class AdapterData(val icon: Int, val title: Int, val summary: Int)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_profile)
 
-        setSupportActionBar(activity_new_profile_toolbar)
+    override fun initData(bundle: Bundle?) {
 
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_new_profile
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         with(activity_new_profile_list) {
             adapter = Adapter(this@CreateProfileActivity)
             setOnItemClickListener { _, _, index, _ ->
@@ -82,5 +86,9 @@ class CreateProfileActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun doBusiness() {
+
     }
 }

@@ -19,7 +19,7 @@ import java.net.Proxy
 import java.net.URL
 import kotlin.concurrent.thread
 
-class ImportUrlActivity : BaseActivity() {
+class ImportUrlActivity : ToolbarActivity() {
     companion object {
         const val DEFAULT_TIMEOUT = 30 * 1000
     }
@@ -37,12 +37,24 @@ class ImportUrlActivity : BaseActivity() {
         )
     )
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_import_url)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data != null && (activity_import_url_form.adapter as FormAdapter)
+                .onActivityResult(requestCode, resultCode, data)
+        )
+            return
 
-        setSupportActionBar(activity_import_url_toolbar)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
+    override fun initData(bundle: Bundle?) {
+       
+    }
+
+    override fun bindLayout(): Int {
+        return R.layout.activity_import_url
+    }
+
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         activity_import_url_form.also {
             it.layoutManager = LinearLayoutManager(this)
             it.adapter = FormAdapter(this, elements)
@@ -53,13 +65,8 @@ class ImportUrlActivity : BaseActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && (activity_import_url_form.adapter as FormAdapter)
-                .onActivityResult(requestCode, resultCode, data)
-        )
-            return
-
-        super.onActivityResult(requestCode, resultCode, data)
+    override fun doBusiness() {
+       
     }
 
     private fun checkAndInsert() {

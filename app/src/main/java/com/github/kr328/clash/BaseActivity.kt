@@ -1,11 +1,15 @@
 package com.github.kr328.clash
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.view.LayoutInflater
+import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.github.kr328.clash.core.event.*
 import com.github.kr328.clash.core.utils.Log
@@ -15,8 +19,17 @@ import com.github.kr328.clash.service.IClashService
 import java.util.concurrent.LinkedBlockingQueue
 import kotlin.concurrent.thread
 
-abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
+abstract class BaseActivity : AppCompatActivity(), IClashEventObserver, IBaseView {
+
+    @SuppressLint("ResourceType")
+    override fun setRootLayout(@LayoutRes layoutId: Int) {
+        if (layoutId <= 0) return
+        setContentView(LayoutInflater.from(this)
+            .inflate(layoutId, null).also { mContentView = it })
+    }
+
     companion object {
+        protected var mContentView: View? = null
         private var activityCount: Int = 0
 
         private val paddingRequest = LinkedBlockingQueue<(IClashService) -> Unit>()
@@ -69,6 +82,10 @@ abstract class BaseActivity : AppCompatActivity(), IClashEventObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initData(intent.extras)
+        setRootLayout(bindLayout())
+        initView(savedInstanceState, mContentView)
+        doBusiness()
         synchronized(BaseActivity::class.java) {
             if (clashConnection == null) {
                 clashConnection = ClashConnection()

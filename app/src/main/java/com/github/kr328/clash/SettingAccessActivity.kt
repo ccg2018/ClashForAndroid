@@ -13,62 +13,15 @@ import com.github.kr328.clash.service.ClashSettingService
 import kotlinx.android.synthetic.main.activity_setting_access.*
 import kotlin.concurrent.thread
 
-class SettingAccessActivity : BaseActivity() {
-    private data class AppInfo(val packageName: String, val name: String, val icon: Drawable)
-
-    private class AppListAdapter(val context: Context) :
-        RecyclerView.Adapter<AppListAdapter.Holder>() {
-
-        var applications: List<AppInfo> = emptyList()
-        var selected: MutableSet<String> = mutableSetOf()
-
-        class Holder(val view: View) : RecyclerView.ViewHolder(view) {
-            val name: TextView = view.findViewById(R.id.adapter_access_app_name)
-            val packageName: TextView = view.findViewById(R.id.adapter_access_app_package_name)
-            val icon: ImageView = view.findViewById(R.id.adapter_access_app_icon)
-            val checkbox: CheckBox = view.findViewById(R.id.adapter_access_app_checkbox)
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-            return Holder(
-                LayoutInflater.from(context)
-                    .inflate(R.layout.adapter_access_app, parent, false)
-            )
-        }
-
-        override fun getItemCount(): Int {
-            return applications.size
-        }
-
-        override fun onBindViewHolder(holder: Holder, position: Int) {
-            val current = applications[position]
-
-            holder.name.text = current.name
-            holder.packageName.text = current.packageName
-            holder.icon.setImageDrawable(current.icon)
-            holder.checkbox.isChecked = current.packageName in selected
-
-            holder.view.setOnClickListener {
-                if (holder.checkbox.isChecked)
-                    selected.remove(current.packageName)
-                else
-                    selected.add(current.packageName)
-
-                notifyItemChanged(position)
-            }
-        }
+class SettingAccessActivity : ToolbarActivity() {
+    override fun initData(bundle: Bundle?) {
     }
 
-    private var showList: Boolean = false
-    private var listLoaded: Boolean = false
-    private var hidden: Boolean = false
+    override fun bindLayout(): Int {
+        return R.layout.activity_setting_access
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting_access)
-
-        setSupportActionBar(activity_setting_access_toolbar)
-
+    override fun initView(savedInstanceState: Bundle?, contentView: View?) {
         activity_setting_access_allow_all.setOnClickListener {
             updateSelectedMode(0)
         }
@@ -86,7 +39,9 @@ class SettingAccessActivity : BaseActivity() {
             layoutManager = LinearLayoutManager(this@SettingAccessActivity)
             isNestedScrollingEnabled = false
         }
+    }
 
+    override fun doBusiness() {
         runClash {
             val settings = it.settingService
 
@@ -135,6 +90,55 @@ class SettingAccessActivity : BaseActivity() {
             }
         }
     }
+
+    private data class AppInfo(val packageName: String, val name: String, val icon: Drawable)
+
+    private class AppListAdapter(val context: Context) :
+        RecyclerView.Adapter<AppListAdapter.Holder>() {
+
+        var applications: List<AppInfo> = emptyList()
+        var selected: MutableSet<String> = mutableSetOf()
+
+        class Holder(val view: View) : RecyclerView.ViewHolder(view) {
+            val name: TextView = view.findViewById(R.id.adapter_access_app_name)
+            val packageName: TextView = view.findViewById(R.id.adapter_access_app_package_name)
+            val icon: ImageView = view.findViewById(R.id.adapter_access_app_icon)
+            val checkbox: CheckBox = view.findViewById(R.id.adapter_access_app_checkbox)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+            return Holder(
+                LayoutInflater.from(context)
+                    .inflate(R.layout.adapter_access_app, parent, false)
+            )
+        }
+
+        override fun getItemCount(): Int {
+            return applications.size
+        }
+
+        override fun onBindViewHolder(holder: Holder, position: Int) {
+            val current = applications[position]
+
+            holder.name.text = current.name
+            holder.packageName.text = current.packageName
+            holder.icon.setImageDrawable(current.icon)
+            holder.checkbox.isChecked = current.packageName in selected
+
+            holder.view.setOnClickListener {
+                if (holder.checkbox.isChecked)
+                    selected.remove(current.packageName)
+                else
+                    selected.add(current.packageName)
+
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    private var showList: Boolean = false
+    private var listLoaded: Boolean = false
+    private var hidden: Boolean = false
 
     override fun onStop() {
         super.onStop()
