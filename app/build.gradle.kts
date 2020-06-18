@@ -40,10 +40,13 @@ android {
     }
 
     buildTypes {
-        named("release") {
+        maybeCreate("release").apply {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -71,15 +74,16 @@ android {
             }
         }
         signingConfigs {
-            named("release") {
-                storeFile = rootProject.file(Objects.requireNonNull(properties.getProperty("storeFile")))
+            maybeCreate("release").apply {
+                storeFile =
+                    rootProject.file(Objects.requireNonNull(properties.getProperty("storeFile")))
                 storePassword = Objects.requireNonNull(properties.getProperty("storePassword"))
                 keyAlias = Objects.requireNonNull(properties.getProperty("keyAlias"))
                 keyPassword = Objects.requireNonNull(properties.getProperty("keyPassword"))
             }
         }
         buildTypes {
-            named("release") {
+            maybeCreate("release").apply {
                 this.signingConfig = signingConfigs.findByName("release")
             }
         }

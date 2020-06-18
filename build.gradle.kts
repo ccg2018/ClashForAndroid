@@ -22,6 +22,9 @@ allprojects {
         maven {
             url = java.net.URI("https://dl.bintray.com/rikkaw/Libraries")
         }
+        maven {
+            url = java.net.URI("https://dl.bintray.com/rikkaw/MaterialPreference")
+        }
     }
 }
 
