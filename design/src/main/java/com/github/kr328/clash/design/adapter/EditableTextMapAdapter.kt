@@ -3,13 +3,10 @@ package com.github.kr328.clash.design.adapter
 import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.github.kr328.clash.design.R
 import com.github.kr328.clash.design.databinding.AdapterEditableTextMapBinding
-import com.github.kr328.clash.design.databinding.DialogEditableMapTextFieldBinding
 import com.github.kr328.clash.design.preference.TextAdapter
+import com.github.kr328.clash.design.preference.requestModelInputEntry
 import com.github.kr328.clash.design.util.layoutInflater
-import com.github.kr328.clash.design.util.root
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EditableTextMapAdapter<K, V>(
     private val context: Context,
@@ -42,7 +39,7 @@ class EditableTextMapAdapter<K, V>(
         holder.binding.valueView.text = valueAdapter.from(current.second)
         holder.binding.root.setOnClickListener {
             val index = values.indexOf(current)
-            requestEditTextMap(
+            requestModelInputEntry(
                 context,
                 title,
                 keyAdapter.from(current.first),
@@ -70,36 +67,3 @@ class EditableTextMapAdapter<K, V>(
     }
 }
 
-private fun requestEditTextMap(
-    context: Context,
-    title: CharSequence,
-    key: CharSequence,
-    value: CharSequence,
-    callback: (Pair<String, String>) -> Unit
-) {
-    val binding = DialogEditableMapTextFieldBinding
-        .inflate(context.layoutInflater, context.root, false)
-
-    binding.keyView.setText(key)
-    binding.valueView.setText(value)
-
-    val dialog = MaterialAlertDialogBuilder(context)
-        .setTitle(title)
-        .setNegativeButton(R.string.cancel) { _, _ -> }
-        .setPositiveButton(R.string.ok) { _, _ ->
-            val k = binding.keyView.text?.toString()?.trim() ?: ""
-            val v = binding.valueView.text?.toString()?.trim() ?: ""
-
-            if (k.isNotEmpty() && v.isNotEmpty()) {
-                callback.invoke(Pair(k, v))
-            }
-        }
-        .setView(binding.root)
-        .create()
-
-    dialog.setOnCancelListener {
-
-    }
-
-    dialog.show()
-}
