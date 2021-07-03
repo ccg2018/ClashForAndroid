@@ -96,6 +96,7 @@ private suspend fun <K, V> requestEditTextMap(
 
     val recyclerAdapter = EditableTextMapAdapter(
         context,
+        title,
         editableValue,
         keyAdapter,
         valueAdapter,
